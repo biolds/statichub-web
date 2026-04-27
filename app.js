@@ -1,8 +1,7 @@
 (function () {
   "use strict";
 
-  const DATA_URL = "https://biolds.github.io/statichub-pkg/staticweb.json";
-  const FALLBACK_URL = "./staticweb.json";
+  const DATA_URL = "./staticweb.json";
   const PKG_BASE_URL = "https://biolds.github.io/statichub-pkg/packages/";
 
   // ─── State ────────────────────────────────────────────────
@@ -45,15 +44,9 @@
   // ─── Data loading ─────────────────────────────────────────
 
   async function loadData() {
-    try {
-      const response = await fetch(DATA_URL);
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      return await response.json();
-    } catch (_) {
-      const fallback = await fetch(FALLBACK_URL);
-      if (!fallback.ok) throw new Error(`HTTP ${fallback.status}`);
-      return fallback.json();
-    }
+    const response = await fetch(DATA_URL);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    return response.json();
   }
 
   function normalizePackage(entry) {
