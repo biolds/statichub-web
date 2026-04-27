@@ -1,0 +1,31 @@
+name: Deploy to Netlify
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "index.html"
+      - "styles.css"
+      - "app.js"
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Netlify CLI
+        run: npm install -g netlify-cli
+
+      - name: Prepare deploy directory
+        run: |
+          mkdir -p /tmp/netlify-deploy
+          cp index.html styles.css app.js /tmp/netlify-deploy/
+
+      - name: Deploy to Netlify
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        run: netlify deploy --prod --dir /tmp/netlify-deploy --site "$NETLIFY_SITE_ID"
