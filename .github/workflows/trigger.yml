@@ -5,9 +5,10 @@ on:
     branches:
       - main
     paths:
-      - 'index.html'
-      - 'styles.css'
-      - 'app.js'
+      - "icon.svg"
+      - "index.html"
+      - "styles.css"
+      - "app.js"
   workflow_dispatch:
 
 jobs:
