@@ -65,6 +65,7 @@
 
     const repoUrl = resolveRepoUrl(source);
     const icon = entry?.icon ? `${entry.icon}`.trim() : null;
+    const has_readme = Boolean(entry?.has_readme);
 
     return {
       path,
@@ -79,6 +80,7 @@
       source,
       repoUrl,
       icon,
+      has_readme,
       searchIndex: [title, description, path, tags.join(" ")].join(" ").toLowerCase(),
     };
   }
@@ -457,6 +459,42 @@
       a.rel = "noopener noreferrer";
       a.textContent = label;
       linksContainer.append(a);
+    }
+
+    // README
+    const readmeSection = main.querySelector(".detail-readme");
+    const readmeContent = main.querySelector(".readme-content");
+    const readmeToggle = main.querySelector(".readme-toggle");
+
+    if (pkg.has_readme) {
+      readmeSection.style.display = "";
+      readmeContent.innerHTML = "<p>Loading README…</p>";
+
+      fetch(`${PKG_BASE_URL}${pkg.path}/README.md`)
+        .then(function (response) {
+          if (!response.ok) throw new Error("README not available");
+          return response.text();
+        })
+        .then(function (markdown) {
+          const lines = markdown.split("\n");
+          const isTruncated = lines.length > 100;
+          const preview = isTruncated ? lines.slice(0, 100).join("\n") : markdown;
+          readmeContent.innerHTML = marked.parse(preview);
+
+          if (isTruncated) {
+            readmeToggle.style.display = "";
+            readmeToggle.textContent = "Show full README";
+            readmeToggle.onclick = function () {
+              readmeContent.innerHTML = marked.parse(markdown);
+              readmeToggle.style.display = "none";
+            };
+          }
+        })
+        .catch(function () {
+          readmeContent.innerHTML = "<p>README unavailable</p>";
+        });
+    } else {
+      readmeSection.style.display = "none";
     }
 
     // Attach homepage copy buttons

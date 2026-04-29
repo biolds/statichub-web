@@ -1,0 +1,8 @@
+{
+  "name": "statichub-web",
+  "version": "1.0.0",
+  "description": "StaticHub web frontend",
+  "dependencies": {
+    "marked": "^15.0.0"
+  }
+}
